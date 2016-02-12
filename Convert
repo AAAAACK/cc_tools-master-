@@ -1,0 +1,68 @@
+import cc_dat_utils
+import sys
+import cc_data
+import json
+
+#file = open("data/pfgd_test.dat", encoding='ascii')
+
+file = cc_dat_utils.make_cc_data_from_dat("data/pfgd_test.dat")
+
+#print (file)
+
+json_reader = open("trial.json", "r")
+json_data = json.load(json_reader)
+json_reader.close() #Close the file now that we're done using it
+
+def translate_optional_fields(optional):
+    fields=[]
+    for key in optional:
+        if key=="3":
+            fields.append(cc_data.CCMapTitleField(optional["3"]))
+        elif key=="4":
+            traps=[]
+            for i in optional["4"]:
+                tx=i[0]
+                ty=i[1]
+                bx=i[2]
+                by=i[3]
+                traps.append(cc_data.CCTrapControl(bx, by, tx, ty))
+            fields.append(cc_data.CCTrapControlsField(traps))
+        elif key=="5":
+            machine=[]
+            for m in optional["5"]:
+                mx=m[0]
+                my=m[1]
+                mbx=m[2]
+                mby=m[3]
+                machine.append(cc_data.CCCloningMachineControl(mx, my, mbx, mby))
+            fields.append(cc_data.CCCloningMachineControlsField(machine))
+        elif key=="6":
+            fields.append(cc_data.CCEncodedPasswordField(optional["6"]))
+        elif key=="7":
+            fields.append(cc_data.CCMapHintField(optional["7"]))
+        elif key=="10":
+            monster=[]
+            for mon in optional["10"]:
+                monx=mon[0]
+                mony=mon[1]
+                monster.append(cc_data.CCCoordinate(monx, mony))
+            fields.append(cc_data.CCMonsterMovementField(monster))
+    return fields
+
+
+def Convert_json_to_CCDAT(Json):
+    finale = cc_data.CCDataFile()
+    for levels in Json:
+        level= cc_data.CCLevel()
+        level.level_number = levels["level"]
+        level.time = levels["time"]
+        level.num_chips = levels["chip"]
+        level.upper_layer = levels["upper"]
+        level.lower_layer = levels["lower"]
+        level.optional_fields = translate_optional_fields(levels["optionalFields"])
+        finale.add_level(level)
+    print (finale)
+    return finale
+
+convert=Convert_json_to_CCDAT(json_data)
+cc_dat_utils.write_cc_data_to_dat(convert,"testlvl")
