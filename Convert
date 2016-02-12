@@ -66,3 +66,4 @@ def Convert_json_to_CCDAT(Json):
 
 convert=Convert_json_to_CCDAT(json_data)
 cc_dat_utils.write_cc_data_to_dat(convert,"testlvl")
+print (cc_dat_utils.make_cc_data_from_dat("testlvl.dat"))
