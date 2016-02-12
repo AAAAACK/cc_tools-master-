@@ -9,7 +9,7 @@ file = cc_dat_utils.make_cc_data_from_dat("data/pfgd_test.dat")
 
 #print (file)
 
-json_reader = open("trial.json", "r")
+json_reader = open("data/<phur>_cc1.json", "r")
 json_data = json.load(json_reader)
 json_reader.close() #Close the file now that we're done using it
 
@@ -65,5 +65,5 @@ def Convert_json_to_CCDAT(Json):
     return finale
 
 convert=Convert_json_to_CCDAT(json_data)
-cc_dat_utils.write_cc_data_to_dat(convert,"testlvl")
+cc_dat_utils.write_cc_data_to_dat(convert,"<phur>_cc1")
 print (cc_dat_utils.make_cc_data_from_dat("testlvl.dat"))
